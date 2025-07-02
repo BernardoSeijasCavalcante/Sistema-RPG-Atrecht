@@ -1,3 +1,6 @@
+//-------------------CÓDIGO CRIADO POR: BERNARDO SEIJAS CAVALCANTE-------------------
+//Linkedin: ww.linkedin.com/in/bernardo-seijas-658562339
+
 package application;
 	
 import java.util.ArrayList;
@@ -58,7 +61,6 @@ public class Main extends Application {
 		
 		try {
 			championPanel.start(new Stage());
-			soundPane.start(new Stage());
 			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
