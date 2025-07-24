@@ -71,24 +71,35 @@ public class Scenery {
 		
 	}
 	
-	public static void turnPass() {
+	public static void turnPass(boolean passEffects) {
 		turn = turn < (champions.size() - 1) ? turn + 1 : 0;
 		for(Champion c : champions) {
 			c.setSelected(false);
 		}
 		
-		for(Champion ch : champions) {
-			for(Effects ef : ch.getEffects()) {
-				if(ef.getLifeA() != 0 || ef.getResilienceA() != 0) {
-					ch.beingAttacked(ef.getLifeA(), ef.getResilienceA(),null);
+		if(passEffects) {
+			for(Champion ch : champions) {
+				for(Effects ef : ch.getEffects()) {
+					if(ef.getLifeA() != 0 || ef.getResilienceA() != 0) {
+						ch.beingAttacked(ef.getLifeA(), ef.getResilienceA(),null);
+					}
 				}
 			}
+			
+			passEffects();
 		}
-		
-		passEffects();
 		
 		champions.get(turn).setSelected(true);
 		
+	}
+	
+	public static void turnBack() {
+		turn = turn > (0) ? turn - 1 : champions.size() - 1;
+		for(Champion c : champions) {
+			c.setSelected(false);
+		}
+		
+		champions.get(turn).setSelected(true);
 	}
 	
 	public static void passEffects() {

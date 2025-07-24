@@ -49,7 +49,7 @@ public class Main extends Application {
 		Canvas canvas = new Canvas(1920,1080);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
-		gc.drawImage(new Image("resources\\scenery\\Floresta.jpg"),0,0,1920,1080);
+		gc.drawImage(new Image("resources\\scenery\\image.jpg"),0,0,1920,1080);
 		
 		root.getChildren().add(canvas);
 		
@@ -60,6 +60,7 @@ public class Main extends Application {
 		ChampionPanel championPanel = new ChampionPanel(champions);
 		
 		try {
+			
 			championPanel.start(new Stage());
 			
 		}catch(Exception e) {
@@ -142,19 +143,25 @@ public class Main extends Application {
 				}
 				
 				if(e.getCode().toString().equals("V")) {
+					if(actions.size() == 0) {
+						Scenery.turnBack();
+					}
 					for(Action ac : actions) {
-						if(ac.getActivity()) {
-							ac.getSender().load();
-							if(ac.getReceiver() != null)
-								ac.getReceiver().load();
-							ac.clearArrow();
-						}
+						ac.getSender().load();
+						if(ac.getReceiver() != null)
+							ac.getReceiver().load();
+						ac.clearArrow();
 					}
 					actions.clear();
 				}
 				
 				if(e.getCode().toString().equals("B")) {
-					Scenery.turnPass();
+					
+					Scenery.turnPass(true);
+				}
+				
+				if(e.getCode().toString().equals("N")) {
+					Scenery.turnPass(false);
 				}
 				
 				if(e.getCode().toString().equals("Q")) {
@@ -163,13 +170,13 @@ public class Main extends Application {
 						c.updateCampMonitor((int)((1000) * (c.getVdm() * 1.0/champions.get(Scenery.turn).getVdm()*1.0) * (c.getInteligence()*1.0/champions.get(Scenery.turn).getInteligence()*1.0)));
 					}
 				}
+				
 				if(e.getCode().toString().equals("W")) {
 					for(Champion c : champions) {
 						c.setCampMonitorActivity(false);
 					}
 				}
 				
-				System.out.println(e.getCode().toString());
 			}
 			
 		});
@@ -202,9 +209,11 @@ public class Main extends Application {
 				//System.out.println(champions.get(0).getLife()[0]);
 				
 				//----------------------RENDERIZAR SETA NO CENÁRIO---------------------
+				
 				Action.actionSelected(actions);
+				
 				if(Scenery.tableTurn.isActivity()) {
-					TableTurn.selectTarget();
+				TableTurn.selectTarget();
 				}
 			}
 			

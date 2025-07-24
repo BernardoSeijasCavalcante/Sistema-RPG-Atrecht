@@ -284,6 +284,9 @@ public class Table {
 		return idmAffected;
 	}
 
+	public void setIdmAffected(Integer idmAffected) {
+		this.idmAffected = idmAffected; 
+	}
 
 	public Integer getInteligenceAffected() {
 		return inteligenceAffected;
@@ -560,6 +563,30 @@ public class Table {
 		action.setEffects(effects);
 	}
 	
+	public void reset() {
+		setStrengthAffected(0);
+		setDefenseAffected(0);
+		setVdmAffected(0);
+		setIdmAffected(0);
+		setInteligenceAffected(0);
+		setChance(100);
+		setResilienceCust(0);
+		
+		isAttackedBox.setSelected(true);
+		
+		effects = null;
+		
+		strengthTF.setText("0");
+		defenseTF.setText("0");
+		vdmTF.setText("0");
+		idmTF.setText("0");
+		inteligenceTF.setText("0");
+		
+		chanceTF.setText("0");
+		resilienceCustTF.setText("0");
+		
+		
+	}
 	public static void mouseOverEffectsButtons(MouseEvent e) {
 		for(EffectsButtons eb : effectsButtons) {
 			eb.update(e);

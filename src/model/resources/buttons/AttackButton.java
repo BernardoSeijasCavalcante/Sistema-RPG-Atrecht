@@ -59,7 +59,8 @@ public class AttackButton{
 					ac.execute();
 				}
 			
-				Scenery.turnPass();
+				Scenery.table.reset();
+				Scenery.turnPass(true);
 				
 			}
 		}

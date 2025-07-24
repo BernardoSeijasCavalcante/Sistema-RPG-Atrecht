@@ -67,7 +67,7 @@ public class DefenseButton{
 				if(defended == false) {
 					champions.get(Scenery.turn).addEffect(new Defense(0,0,0,(int)(champions.get(Scenery.turn).getDefense()*0.25),0,0,0,1));
 					champions.get(Scenery.turn).addEffect(new CureResilience(0,(int)(champions.get(Scenery.turn).getCharacter().getResilience() * 0.1),0,0,0,0,0,1));
-					Scenery.turnPass();
+					Scenery.turnPass(true);
 				}
 			}
 		}

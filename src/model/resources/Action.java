@@ -61,7 +61,7 @@ public class Action {
 		root.getChildren().add(group);
 	}
 	
-	public Action(Champion sender, Champion receiver, List<Effects> effects) {
+	public Action(Champion sender, Champion receiver, List<Effects> effects) { //Construtor usado no TableTurn para aplicar efeitos aos campeões
 		this.sender = sender;
 		this.receiver = receiver;
 		this.effects = effects;
@@ -79,6 +79,18 @@ public class Action {
 
 	public void setSender(Champion sender) {
 		this.sender = sender;
+		
+		setStrengthAffected(0);
+		setDefenseAffected(0);
+		setVdmAffected(0);
+		setIdmAffected(0);
+		setInteligenceAffected(0);
+		
+		setChance(100);
+		setResilienceCust(0);
+		
+		activity = true;
+		
 		this.typeAttack = sender.getType();
 	}
 
@@ -376,6 +388,9 @@ public class Action {
 			}
 			if(typeAttack == TypeAttacked.MAGICAL) {
 				if(played > 100 - ((30 * pointVdm) + (20 * pointInteligence)) * (700/distance) * (getChance()/100)) {
+					if(attack <= 0) {
+						attack = 10;
+					}
 					if(played > 100 - 10 * (900/distance) * pointInteligence) {
 						Integer lifeAffected = (idm / attack) - (receiver.getIdm() / receiver.getDefense()) > 0 ? (int) (((idm / attack) - (receiver.getIdm() / receiver.getDefense())) * (1 + 0.25 * Math.random())) : 0;
 						Integer resilienceAffected = (int) (((idm / attack) - (receiver.getIdm() / receiver.getDefense())) * 0.1);
@@ -438,7 +453,7 @@ public class Action {
 		receiver.save();
 	}
 	
-	public static void creatingAction(List<Action> actions, MouseEvent e) {
+	public static void creatingAction(List<Action> actions, MouseEvent e) { //Flexibilidade da seta enquanto não tem um destinatário
 		for(Action ac : actions) {
 			if(ac.getReceiver() == null) {
 				ac.updateArrow(e.getX(), e.getY(),false);
@@ -456,7 +471,6 @@ public class Action {
 					actions.get(actions.size() - 1).getSender().startMovement((int)e.getX(), (int)e.getY());	
 				}
 				
-				System.out.println("azul");
 			}
 		}
 	}
@@ -465,7 +479,7 @@ public class Action {
 		for(Champion c : champions) {
 			if(c.getTarget().contains(e.getX(), e.getY()) && !Scenery.table.isActivity() && !Scenery.tableTurn.isActivity() ) {
 				
-				if(actions.size() != 0 && (champions.get(Scenery.turn) == actions.get(0).sender)) {
+				if(actions.size() != 0 && (champions.get(Scenery.turn) == actions.get(0).sender)) {//Quando ao menos uma ação tiver sido 
 					//Instanciando a segunda ou maior ação da lista
 					//--------------SELECIONANDO A ORIGEM DA AÇÃO; CRIANDO A AÇÃO E ADICIONANDO SEU REMETENTE----------------
 					if(c.isSelected() && champions.indexOf(c) == Scenery.turn && actions.get(actions.size() - 1).getReceiver() != null) {
@@ -476,20 +490,23 @@ public class Action {
 					}
 					//--------------ADICIONANDO O DESTINATÁRIO DA AÇÃO----------------
 					else if(!c.isSelected() && actions.get(actions.size() - 1).getReceiver() == null) {
+						//Impedir que um mesmo campeão seja atacado mais de uma vez
 						boolean exist = false;
-						for(Action ac : actions) {
+						for(Action ac : actions) { 
 							if(ac.getReceiver() == c) {
 								exist = true;
 							}
 						}
 						if(!exist)
-							actions.get(actions.size() - 1).setReceiver(c);
+							actions.get(actions.size() - 1).setReceiver(c);//Define o destinatário da ação
 					}
 				}else {
+					//Salvando estado dos campeões após uma rodade (Recurso necessário para o botão voltar.
 					for(Action ac : actions) {
 						ac.saveChampions();
 					}
 					actions.clear();
+					
 					//Instanciando a primeira ação da lista
 					if(c.isSelected() && champions.indexOf(c) == Scenery.turn) {
 						Action action = new Action(root);
@@ -506,6 +523,7 @@ public class Action {
 					ch.setSelected(false);
 				}
 				c.setSelected(true);
+				
 			}
 		}
 	}
@@ -513,16 +531,17 @@ public class Action {
 	private static Action lastActionSelected;
 	
 	public static void actionSelected(List<Action> actions) {
+		
+		
 		for(Action ac : actions) {
 			if(ac.getReceiver() != null && !ac.getReceiver().isSelected()) {
 				ac.updateArrow(ac.getReceiver().getChampion().getTranslateX() + 67, ac.getReceiver().getChampion().getTranslateY() + 112,false);
 			}else if(ac.getReceiver() != null && ac.getReceiver().isSelected()){//Se a seta atual for a do champion selecionado, então...
-				if(lastActionSelected != ac) {
+				if(lastActionSelected != ac) { // Este If serve para que os atributos não fiquem sendo baixados o tempo todo na tábua. Se fosse baixado o tempo todo não seria possível alterar os atributos da tábua
 					Scenery.table.download(ac);
 					lastActionSelected = ac;
+					System.out.println("Erro aqui!");
 				}
-				
-				//System.out.println(ac + " - " + tb.getStrengthAffected());
 				
 				ac.updateArrow(ac.getReceiver().getChampion().getTranslateX() + 67, ac.getReceiver().getChampion().getTranslateY() + 112,true);
 				Scenery.table.upload(ac);
